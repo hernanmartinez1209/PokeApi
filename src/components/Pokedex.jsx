@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import CardPoke from './pokedex/CardPoke'
 import InputSearch from './pokedex/InputSearch'
+import Pagination from './pokedex/Pagination'
 import SelectByType from './pokedex/SelectByType'
 
 const Pokedex = () => {
@@ -27,7 +28,15 @@ const Pokedex = () => {
     }
     }, [typeSelected])
   console.log(pokemons);
-  return (
+
+
+  
+  //
+ const [page, setPage] = useState(10)
+ const [pokePerPage, setPokePerPage] = useState(8)
+ const initialPoke = (page - 1) * pokePerPage
+ const finalPoke =  page * pokePerPage 
+ return (
     <div>
         <header>
 
@@ -37,13 +46,19 @@ const Pokedex = () => {
         </header>
         <aside>
       <InputSearch />
+      <Pagination 
+      setPage={setPage}
+        page={page}
+        pagesLength={pokemons && Math.ceil(pokemons?.length /pokePerPage)}
+      />
       <SelectByType  setTypeSelected={setTypeSelected}/>
      </aside>
       <main>
         <div className="card-container">
           {
-            pokemons?.map(pokemon =>(
-              <CardPoke key={pokemon.url} 
+            pokemons?.slice(initialPoke , finalPoke).map(pokemon =>(
+              <CardPoke 
+              key={pokemon.url} 
               url={pokemon.url}
               />
             ))
